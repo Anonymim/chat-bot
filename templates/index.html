@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interface</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="chat-container">
+        <div id="chat-box">
+            <div id="chat-log">
+                <!-- Chat messages will appear here -->
+            </div>
+        </div>
+        <form id="chat-form">
+            <input type="text" id="user-input" placeholder="Ask about traits..." autocomplete="off">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#chat-form').on('submit', function(e) {
+                e.preventDefault();
+
+                var userInput = $('#user-input').val();
+
+                // Append user message to the chat log
+                $('#chat-log').append('<div class="user-message">You: ' + userInput + '</div>');
+
+                // Send the user input to the server
+                $.post('/chat', {
+                    user_input: userInput
+                }, function(data) {
+                    // Append chatbot's response
+                    $('#chat-log').append('<div class="bot-message">Bot: ' + data.response + '</div>');
+
+                    // Scroll to the bottom
+                    $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+
+                    // Clear the input field
+                    $('#user-input').val('');
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
